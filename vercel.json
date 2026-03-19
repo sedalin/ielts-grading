@@ -2,5 +2,6 @@
   "framework": null,
   "buildCommand": "cd client && npm install && npm run build",
   "outputDirectory": "client/dist",
-  "installCommand": "cd client && npm install"
+  "installCommand": "cd client && npm install",
+  "regions": ["sin1"]
 }
