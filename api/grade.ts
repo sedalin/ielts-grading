@@ -167,9 +167,9 @@ ${content}
 
 请进行严格批改。`;
 
-  const userPrompt = \`作文题目：\${topic}
+  const userPrompt = `作文题目：${topic}
 
-请根据以上标准进行严格批改。\`;
+请根据以上标准进行严格批改。`;
 
   const messages = [
     { role: 'system', content: systemPrompt },
