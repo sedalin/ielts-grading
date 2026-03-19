@@ -1,6 +1,15 @@
 {
-  "rewrites": [
-    { "source": "/api/grade", "destination": "/api/grade" },
-    { "source": "/(.*)", "destination": "/client/dist/index.html" }
+  "version": 2,
+  "builds": [
+    {
+      "src": "client/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/grade",
+      "dest": "/api/grade.ts"
+    }
   ]
 }
