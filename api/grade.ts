@@ -1,5 +1,4 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import 'dotenv/config';
 
 interface LineError {
   error: string;
