@@ -15,7 +15,7 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-100 py-8">
       <header className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">雅思作文智能批改系统</h1>
+        <h1 className="text-3xl font-bold text-gray-800">阳王批改</h1>
         <p className="text-gray-600 mt-2">基于AI的雅思作文四维评分</p>
       </header>
 
