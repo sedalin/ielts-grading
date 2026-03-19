@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/components/essayinput.tsx","./src/components/essayline.tsx","./src/components/gradingresult.tsx","./src/components/scorecard.tsx","./src/hooks/usegrading.ts","./src/types/essay.ts"],"version":"5.6.3"}
