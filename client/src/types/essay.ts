@@ -38,3 +38,10 @@ export interface EssayInput {
   topic: string;
   content: string;
 }
+
+export interface SummaryResult {
+  success: boolean;
+  markdown: string;
+  filename: string;
+  filePath?: string;
+}

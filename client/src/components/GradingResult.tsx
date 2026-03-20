@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import type { GradingResult, LineError, Issue } from '../types/essay';
+import type { GradingResult, LineError, Issue, SummaryResult } from '../types/essay';
 import { ScoreCard } from './ScoreCard';
 
 interface GradingResultProps {
   result: GradingResult;
   originalContent: string;
+  topic: string;
 }
 
 type ErrorType = 'taskResponse' | 'coherence' | 'lexical' | 'grammar' | 'all';
@@ -214,8 +215,36 @@ function ErrorTable({ title, errors, type }: { title: string; errors: LineError[
   );
 }
 
-export function GradingResult({ result, originalContent }: GradingResultProps) {
+export function GradingResult({ result, originalContent, topic }: GradingResultProps) {
   const [activeTab, setActiveTab] = useState<ErrorType>('all');
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownloadSummary = async () => {
+    try {
+      setDownloading(true);
+      const response = await fetch('/api/grade/summary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ topic, content: originalContent, gradingResult: result }),
+      });
+      const data: SummaryResult = await response.json();
+      if (data.success) {
+        const blob = new Blob([data.markdown], { type: 'text/markdown;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = data.filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }
+    } catch (error) {
+      console.error('Download failed:', error);
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   const taskResponseIssues = result.taskResponse?.issues || [];
   const coherenceIssues = result.coherence?.issues || [];
@@ -237,6 +266,26 @@ export function GradingResult({ result, originalContent }: GradingResultProps) {
 
   return (
     <div className="max-w-5xl mx-auto mt-8 space-y-6">
+      {/* Download Summary Button */}
+      <div className="flex justify-end">
+        <button
+          onClick={handleDownloadSummary}
+          disabled={downloading}
+          className="px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 disabled:bg-gray-400 transition-all shadow-md flex items-center gap-2"
+        >
+          {downloading ? (
+            <>
+              <span className="animate-spin">⏳</span>
+              生成中...
+            </>
+          ) : (
+            <>
+              📥 下载总结文档
+            </>
+          )}
+        </button>
+      </div>
+
       {/* Score Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <ScoreCard title="Task Response" chineseTitle="写作任务回应" score={result.taskResponse.score} feedback={result.taskResponse.feedback} />
