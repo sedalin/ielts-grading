@@ -1,12 +1,13 @@
 import { useState } from 'react';
-import type { EssayInput } from '../types/essay';
+import type { EssayInput as EssayInputType } from '../types/essay';
 
 interface EssayInputProps {
-  onSubmit: (input: EssayInput) => void;
+  onSubmit: (input: EssayInputType) => void;
   loading: boolean;
+  elapsedSeconds: number;
 }
 
-export function EssayInput({ onSubmit, loading }: EssayInputProps) {
+export function EssayInput({ onSubmit, loading, elapsedSeconds }: EssayInputProps) {
   const [topic, setTopic] = useState('');
   const [content, setContent] = useState('');
 
@@ -18,6 +19,11 @@ export function EssayInput({ onSubmit, loading }: EssayInputProps) {
   };
 
   const isValid = topic.trim() && content.trim();
+
+  // Estimated total time is ~50 seconds, show remaining time
+  const estimatedTotal = 50;
+  const remainingSeconds = Math.max(0, estimatedTotal - elapsedSeconds);
+  const progress = Math.min(100, (elapsedSeconds / estimatedTotal) * 100);
 
   return (
     <div
@@ -120,6 +126,74 @@ export function EssayInput({ onSubmit, loading }: EssayInputProps) {
           </p>
         </div>
 
+        {/* Timer Display */}
+        {loading && (
+          <div
+            className="flex items-center justify-center gap-6 p-6 rounded-xl"
+            style={{
+              background: 'linear-gradient(135deg, rgba(201, 162, 39, 0.08), rgba(201, 162, 39, 0.02))',
+              border: '1px solid rgba(201, 162, 39, 0.2)',
+            }}
+          >
+            {/* Circular Timer */}
+            <div className="relative w-20 h-20">
+              <svg className="w-20 h-20 transform -rotate-90" viewBox="0 0 36 36">
+                {/* Background circle */}
+                <path
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  fill="none"
+                  stroke="var(--color-border)"
+                  strokeWidth="3"
+                />
+                {/* Progress circle */}
+                <path
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  fill="none"
+                  stroke="var(--color-accent)"
+                  strokeWidth="3"
+                  strokeDasharray={`${progress}, 100`}
+                  strokeLinecap="round"
+                  style={{ transition: 'stroke-dasharray 0.3s ease' }}
+                />
+              </svg>
+              {/* Center text */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span
+                  className="text-xl font-bold"
+                  style={{
+                    fontFamily: "'Cormorant Garamond', serif",
+                    color: 'var(--color-accent)',
+                  }}
+                >
+                  {remainingSeconds}
+                </span>
+              </div>
+            </div>
+
+            {/* Timer Info */}
+            <div className="flex flex-col">
+              <span
+                className="text-lg font-semibold"
+                style={{ color: 'var(--color-primary)' }}
+              >
+                AI 正在分析中...
+              </span>
+              <span className="text-sm" style={{ color: 'var(--color-text-light)' }}>
+                预计还需约 {remainingSeconds} 秒
+              </span>
+              <div className="flex items-center gap-2 mt-1">
+                <span
+                  className="w-2 h-2 rounded-full animate-pulse"
+                  style={{ background: 'var(--color-accent)' }}
+                />
+                <span className="text-xs" style={{ color: 'var(--color-text-light)' }}>
+                  正在分析词汇、语法、连贯性
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Submit Button */}
         <div className="pt-4">
           <button
@@ -138,7 +212,7 @@ export function EssayInput({ onSubmit, loading }: EssayInputProps) {
           >
             {loading ? (
               <>
-                <span className="spinner" />
+                <span className="spinner" style={{ borderColor: 'rgba(255,255,255,0.3)', borderTopColor: 'white' }} />
                 <span>正在分析您的作文...</span>
               </>
             ) : (
@@ -159,17 +233,19 @@ export function EssayInput({ onSubmit, loading }: EssayInputProps) {
       </form>
 
       {/* Decorative Quote */}
-      <div className="mt-8 pt-6" style={{ borderTop: '1px solid var(--color-border)' }}>
-        <blockquote
-          className="text-sm italic"
-          style={{
-            color: 'var(--color-text-light)',
-            fontFamily: "'Cormorant Garamond', serif",
-          }}
-        >
-          "Practice is the best of all instructors, but experience is the school where we learn."
-        </blockquote>
-      </div>
+      {!loading && (
+        <div className="mt-8 pt-6" style={{ borderTop: '1px solid var(--color-border)' }}>
+          <blockquote
+            className="text-sm italic"
+            style={{
+              color: 'var(--color-text-light)',
+              fontFamily: "'Cormorant Garamond', serif",
+            }}
+          >
+            "Practice is the best of all instructors, but experience is the school where we learn."
+          </blockquote>
+        </div>
+      )}
     </div>
   );
 }

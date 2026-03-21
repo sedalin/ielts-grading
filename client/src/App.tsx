@@ -4,7 +4,7 @@ import { GradingResult } from './components/GradingResult';
 import { useGrading } from './hooks/useGrading';
 
 function App() {
-  const { result, loading, error, gradeEssay } = useGrading();
+  const { result, loading, error, gradeEssay, elapsedSeconds } = useGrading();
   const [originalContent, setOriginalContent] = useState('');
   const [topic, setTopic] = useState('');
 
@@ -113,7 +113,7 @@ function App() {
         <div className="container-custom">
           {/* Input Section */}
           <div className="max-w-3xl mx-auto animate-fade-in-up stagger-3">
-            <EssayInput onSubmit={handleSubmit} loading={loading} />
+            <EssayInput onSubmit={handleSubmit} loading={loading} elapsedSeconds={elapsedSeconds} />
           </div>
 
           {/* Error Message */}
