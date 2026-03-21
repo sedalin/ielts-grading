@@ -52,7 +52,7 @@ async function callMiniMax(messages: MiniMaxMessage[]): Promise<string> {
     body: JSON.stringify({
       model: 'MiniMax-M2.7',
       messages,
-      temperature: 0.7,
+      temperature: 0,
     }),
   });
 
